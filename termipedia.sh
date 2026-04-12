@@ -32,7 +32,8 @@ fetch_article() {
     else
         printf '%s' "$RESPONSE" \
             | jq -r '.query.pages | to_entries[0].value | "# " + .title + "\n\n" + .extract' \
-            | less
+            | sed 's/^==== \(.*\) ====$/#### \1/; s/^=== \(.*\) ===$/### \1/; s/^== \(.*\) ==$/## \1/' \
+            | bat --language=md --style=plain
     fi
 }
 
