@@ -6,6 +6,9 @@ API="https://en.wikipedia.org/w/api.php"
 BLUE="$(printf '\033[34m')"
 RESET="$(printf '\033[0m')"
 
+# forces the use of sh so preview doesn't break on non POSIX compliant shells
+SHELL=/bin/sh
+
 usage() {
     cat <<EOF
 Usage: $(basename "$0") [OPTIONS] <query>
