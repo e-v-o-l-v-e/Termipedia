@@ -1,8 +1,8 @@
 #!/bin/sh
 set -eu
 
-API="https://en.wikipedia.org/w/api.php"
-
+# Default language is English
+LANGUAGE="en"
 BLUE="$(printf '\033[34m')"
 RESET="$(printf '\033[0m')"
 
@@ -14,9 +14,11 @@ Search and view Wikipedia articles from the terminal.
 
 Options:
   -h, --help        Show this help message
+  -l, --language    Sets the Wikipedia article language (ccTLD notationTLD)
 
 Examples:
   $(basename "$0") linux
+  $(basename "$0") ssh -l de
   $(basename "$0") "quantum mechanics"
 EOF
 }
@@ -26,11 +28,12 @@ QUERY=""
 while [ $# -gt 0 ]; do
     case "$1" in
         -h|--help) usage; exit 0 ;;
-        *) QUERY="$QUERY $1" ;;
+        -l|--language) LANGUAGE="$2"; shift 2 ;;
+        *) QUERY="$QUERY $1" shift ;;
     esac
-    shift
 done
 
+API="https://$LANGUAGE.wikipedia.org/w/api.php"
 # Trim leading space
 QUERY=$(printf "%s" "$QUERY" | sed 's/^ *//')
 
