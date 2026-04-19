@@ -18,6 +18,8 @@ Search and view Wikipedia articles from the terminal.
 Options:
   -h, --help        Show this help message
   -l, --language    Sets the Wikipedia article language (ccTLD notationTLD)
+  -st, --save-to    Saves the Wiki article to a file
+  -p, --pager       Pager to be used for viewing the Wikipedia article (e.g. 'less')
 
 Examples:
   $(basename "$0") linux
@@ -27,11 +29,16 @@ EOF
 }
 
 QUERY=""
+SAVE_TO_FILE=0
+FILE_LOCATION=""
+PAGER="less"
 
 while [ $# -gt 0 ]; do
     case "$1" in
         -h|--help) usage; exit 0 ;;
+        -st|--save-to) SAVE_TO_FILE=1;FILE_LOCATION="$2"; shift 2;;
         -l|--language) LANGUAGE="$2"; shift 2 ;;
+        -p|--pager) PAGER="$2"; shift 2 ;;
         *) QUERY="$QUERY $1" shift ;;
     esac
 done
@@ -53,12 +60,31 @@ for cmd in curl jq fzf; do
     }
 done
 
+# Renders the text in a pager
 render() {
     TEXT="# $1
 
 $2"
+    printf "%s\n" "$TEXT" | "$PAGER"
+}
 
-    printf "%s\n" "$TEXT" | less
+# Redirects the response the the API to a file on disk
+printer() {
+    TEXT="# $1
+
+$2"
+
+    printf "%s\n" "$TEXT" > "$FILE_LOCATION"
+}
+
+# Checks if the text should be rendered in a pager or to populate a given file.
+# Doesn't set the $TEXT variable, as that is the responsibility of the handle
+stream_handle() {
+    if [ "$SAVE_TO_FILE" = 0 ]; then
+        render "$1" "$2"
+    else
+        printer "$1" "$2"
+    fi
 }
 
 article() {
@@ -96,7 +122,7 @@ curl -fsSL '$API?action=query&titles='\$t'&prop=extracts&explaintext=1&format=js
         return
     fi
 
-    render "$TITLE" "$BODY"
+    stream_handle "$TITLE" "$BODY"
 }
 
 # SEARCH + SELECT
