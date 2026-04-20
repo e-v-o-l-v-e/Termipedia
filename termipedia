@@ -36,7 +36,7 @@ PAGER="less"
 while [ $# -gt 0 ]; do
     case "$1" in
         -h|--help) usage; exit 0 ;;
-        -s|--save) SAVE_TO_FILE=1;FILE_LOCATION="$2"; shift 2;;
+	-s|--save) SAVE_TO_FILE=1; shift ;;
         -l|--language) LANGUAGE="$2"; shift 2 ;;
         -v|--viewer) PAGER="$2"; shift 2 ;;
 	*) QUERY="$QUERY $1"; shift ;;
@@ -70,13 +70,13 @@ $2"
 
 # Redirects the response the the API to a file on disk
 printer() {
+    mkdir -p .articles
+    FILE_LOCATION=".articles/$(printf '%s' "$1" | tr ' /' '_').md"
     TEXT="# $1
-
 $2"
-
     printf "%s\n" "$TEXT" > "$FILE_LOCATION"
+    printf "Saved to %s\n" "$FILE_LOCATION" >&2
 }
-
 # Checks if the text should be rendered in a pager or to populate a given file.
 # Doesn't set the $TEXT variable, as that is the responsibility of the handle
 stream_handle() {
