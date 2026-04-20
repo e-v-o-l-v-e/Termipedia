@@ -18,7 +18,7 @@ Search and view Wikipedia articles from the terminal.
 Options:
   -h, --help        Show this help message
   -l, --language    Sets the Wikipedia article language (ccTLD notationTLD)
-  -st, --save-to    Saves the Wiki article to a file
+  -s, --save        Saves the Wiki article to a file
   -v, --view        Pager to be used for viewing the Wikipedia article (e.g. 'less')
 
 Examples:
@@ -36,7 +36,7 @@ PAGER="less"
 while [ $# -gt 0 ]; do
     case "$1" in
         -h|--help) usage; exit 0 ;;
-        -st|--save-to) SAVE_TO_FILE=1;FILE_LOCATION="$2"; shift 2;;
+        -s|--save) SAVE_TO_FILE=1;FILE_LOCATION="$2"; shift 2;;
         -l|--language) LANGUAGE="$2"; shift 2 ;;
         -v|--viewer) PAGER="$2"; shift 2 ;;
 	*) QUERY="$QUERY $1"; shift ;;
