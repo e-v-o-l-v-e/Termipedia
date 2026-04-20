@@ -59,7 +59,7 @@ brew install curl jq fzf
 ```sh
 git clone https://github.com/kantiankant/Termipedia
 cd Termipedia
-doas/sudo cp termipedia.sh /usr/local/bin/termipedia
+doas/sudo cp termipedia /usr/local/bin/
 ```
 
 <details>
